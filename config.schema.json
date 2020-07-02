@@ -1,0 +1,19 @@
+{
+  "pluginAlias": "Linksys",
+  "pluginType": "platform",
+  "singular": true,
+  "schema": {
+    "routerIP": {
+      "title": "Router IP",
+      "type": "string",
+      "default": "http://192.168.1.1",
+      "required": true,
+      "format": "ipv4"
+    },
+    "password": {
+      "title": "Router Password",
+      "type": "string",
+      "required": true
+    }
+  }
+}

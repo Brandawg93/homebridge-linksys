@@ -5,6 +5,25 @@
   "description": "Linksys plugin for homebridge: https://homebridge.io/",
   "main": "dist/index.js",
   "license": "GPL-3.0",
+  "author": {
+    "name": "Brandon McFarlin",
+    "email": "brandonmcfarlin1016@gmail.com",
+    "url": "https://github.com/Brandawg93/"
+  },
+  "funding": [
+    {
+      "type": "paypal",
+      "url": "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=CEYYGVB7ZZ764&item_name=homebridge-linksys&currency_code=USD&source=url"
+    },
+    {
+      "type": "individual",
+      "url": "https://www.buymeacoffee.com/L1FgZTD"
+    },
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/Brandawg93"
+    }
+  ],
   "scripts": {
     "clean": "rimraf ./dist ./coverage",
     "build": "rimraf ./dist ./coverage && tsc",
@@ -37,22 +56,22 @@
     "config.schema.json"
   ],
   "dependencies": {
-    "axios": "^0.19.2"
+    "axios": "^0.20.0"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.0",
-    "@types/node": "14.0.14",
-    "@typescript-eslint/eslint-plugin": "^2.31.0",
-    "@typescript-eslint/parser": "^2.31.0",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-jest": "^23.8.2",
-    "eslint-plugin-prettier": "^3.1.3",
-    "homebridge": "^1.0.4",
-    "jest": "^26.0.1",
-    "prettier": "^2.0.5",
+    "@types/jest": "^26.0.14",
+    "@types/node": "14.11.2",
+    "@typescript-eslint/eslint-plugin": "^4.3.0",
+    "@typescript-eslint/parser": "^4.3.0",
+    "eslint": "^7.10.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-plugin-jest": "^24.0.2",
+    "eslint-plugin-prettier": "^3.1.4",
+    "homebridge": "^1.2.3",
+    "jest": "^26.4.2",
+    "prettier": "^2.1.2",
     "rimraf": "^3.0.2",
-    "ts-jest": "^26.0.0",
-    "typescript": "^3.8.3"
+    "ts-jest": "^26.4.1",
+    "typescript": "^4.0.3"
   }
 }

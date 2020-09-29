@@ -1,12 +1,8 @@
 import {
   API,
   APIEvent,
-  AudioStreamingCodecType,
-  AudioStreamingSamplerate,
-  CameraControllerOptions,
   CharacteristicEventTypes,
   CharacteristicSetCallback,
-  CharacteristicValue,
   DynamicPlatformPlugin,
   HAP,
   Logging,
@@ -14,7 +10,9 @@ import {
   PlatformAccessoryEvent,
   PlatformConfig,
 } from 'homebridge';
-import { LinksysAPI } from './api';
+import { LinksysAPI } from './linksys/api';
+import { LinksysConfig } from './linksys/models/config';
+import { LinksysAccessory } from './accessory';
 
 let hap: HAP;
 let Accessory: typeof PlatformAccessory;
@@ -25,7 +23,7 @@ const PLATFORM_NAME = 'Linksys';
 class LinksysPlatform implements DynamicPlatformPlugin {
   private readonly log: Logging;
   private readonly api: API;
-  private config: PlatformConfig;
+  private config: LinksysConfig;
   private readonly accessories: Array<PlatformAccessory> = [];
   private routerIP = 'http://192.168.1.1';
   private password = '';
@@ -33,7 +31,7 @@ class LinksysPlatform implements DynamicPlatformPlugin {
   constructor(log: Logging, config: PlatformConfig, api: API) {
     this.log = log;
     this.api = api;
-    this.config = config;
+    this.config = config as LinksysConfig;
 
     // Need a config or plugin will not start
     if (!config) {
@@ -41,8 +39,8 @@ class LinksysPlatform implements DynamicPlatformPlugin {
     }
 
     // Set up the config if options are not set
-    this.routerIP = config.routerIP;
-    this.password = config.password;
+    this.routerIP = this.config.routerIP;
+    this.password = this.config.password;
 
     if (!this.password) {
       this.log.error("Please add your router's password to the config.json.");
@@ -54,24 +52,14 @@ class LinksysPlatform implements DynamicPlatformPlugin {
 
   configureAccessory(accessory: PlatformAccessory): void {
     this.log.info(`Configuring accessory ${accessory.displayName}`);
-    // this.api.unregisterPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
 
     accessory.on(PlatformAccessoryEvent.IDENTIFY, () => {
       this.log.info(`${accessory.displayName} identified!`);
     });
 
-    const routerService = accessory.getService(hap.Service.WiFiRouter);
-    if (routerService) {
-        accessory.removeService(routerService);
-    }
+    const linksysAccessory = new LinksysAccessory(accessory, this.config, this.log, hap);
 
-    const router = new hap.Service.WiFiRouter();
-    // router
-    //   .getCharacteristic(hap.Characteristic.ConfiguredName)
-    //   .on(CharacteristicEventTypes.GET, (callback: CharacteristicSetCallback) => {
-    //     callback(null, true);
-    //   });
-
+    const router = linksysAccessory.createService(hap.Service.WiFiRouter);
     router
       .getCharacteristic(hap.Characteristic.ManagedNetworkEnable)
       .on(CharacteristicEventTypes.GET, (callback: CharacteristicSetCallback) => {
@@ -90,7 +78,7 @@ class LinksysPlatform implements DynamicPlatformPlugin {
 
   async didFinishLaunching(): Promise<void> {
     const api = new LinksysAPI(this.routerIP, this.password);
-    const validated = (await api.sendRequest('core/CheckAdminPassword')).result == 'OK';
+    const validated = (await api.sendRequest('core/CheckAdminPassword')).result === 'OK';
 
     if (!validated) {
       this.log.error('Password to router is incorrect.');

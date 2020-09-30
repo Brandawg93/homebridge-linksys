@@ -59,20 +59,19 @@ class LinksysPlatform implements DynamicPlatformPlugin {
 
     const linksysAccessory = new LinksysAccessory(accessory, this.config, this.log, hap);
 
-    const router = linksysAccessory.createService(hap.Service.WiFiRouter);
-    router
+    const routerService = linksysAccessory.createService(hap.Service.WiFiRouter);
+    routerService
       .getCharacteristic(hap.Characteristic.ManagedNetworkEnable)
       .on(CharacteristicEventTypes.GET, (callback: CharacteristicSetCallback) => {
         callback(null, 1);
       });
 
-    router
+    routerService
       .getCharacteristic(hap.Characteristic.RouterStatus)
       .on(CharacteristicEventTypes.GET, (callback: CharacteristicSetCallback) => {
         callback(null, 0);
       });
 
-    accessory.addService(router);
     this.accessories.push(accessory);
   }
 
